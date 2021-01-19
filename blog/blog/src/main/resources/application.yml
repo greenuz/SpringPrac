@@ -1,0 +1,6 @@
+spring:
+  datasource: # 스프링을 데이터 베이스에 연결 할 것인데 드라이버 클래스네임은 아래와 같고
+    url: jdbc:mariadb://localhost:3306/blog?serverTimezone=Asia/Seoul # 데이터 베이스의 시간 설정 진행하고
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: greenux
+    password: qwer1234
