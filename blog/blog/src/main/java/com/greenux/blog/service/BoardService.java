@@ -1,10 +1,14 @@
 package com.greenux.blog.service;
 
+import java.util.List;
+
 import com.greenux.blog.model.Board;
 import com.greenux.blog.model.User;
 import com.greenux.blog.repository.BoardRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,4 +26,9 @@ public class BoardService {
         board.setUser(user);
         boardRepository.save(board);
     }
+
+    //dummyConroller에서 페이징 해본 것을 기억해서 해보자.
+    public Page<Board> 글목록(Pageable pageable){
+        return boardRepository.findAll(pageable); //boardRepository 가 jpaRepository를 상속한 것이기 때문에, findAll()을 가지고 있다.
+}
 }
