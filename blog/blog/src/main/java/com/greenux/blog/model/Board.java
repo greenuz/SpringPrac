@@ -45,7 +45,7 @@ public class Board {
         데이터의 용량이 커진다. 따라서 Lob 이라는 어노테이션을 주어서 -> 대용량을 처리할 수 있도록 한다.
     */
 
-    @ColumnDefault("0") //int 이므로  '0' 으로 표현하는 것이 아닌 
+    // @ColumnDefault("0") //int 이므로  '0' 으로 표현하는 것이 아닌 
     private int count; //조회수용
   
     //private int userId; //어떤 작성자가 적었는지 확인하는 정보. ORM 에서는 해당 방법 처럼 Forign key로 하는 것이 아니라, 바로 객체 생성.

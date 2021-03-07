@@ -1,5 +1,7 @@
 package com.greenux.blog.repository;
 
+import java.util.Optional;
+
 import com.greenux.blog.model.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,5 +31,6 @@ public interface UserRepository extends JpaRepository<User,Integer>{
         @Query(value="SELECT * FROM user where username = ?1 AND password = ?2", nativeQuery = true)
         User login(String username, String password);
     */
- 
+    // Select * FROM user where username = 1?; 아래와 같은 이름으로 findByUsername무조건.
+    Optional<User> findByUsername(String username);
 }
