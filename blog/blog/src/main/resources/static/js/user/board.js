@@ -8,8 +8,15 @@ let index ={
         // $("#btn-login").on("click",()=>{ //function(){}, () => {} this를 바인딩 하기 위해서
         //btn-save를 찾아서 이벤트를 바인드 한다. ( 리스너를 만드는 것 ) 
         //on 뒤에 첫번재 파라미터는 어떠한 이벤트가 발생하는 지에 대한 조건, 두번째 파라미터에는 무엇을 할건지에 대해
-            this.login();
+        //    this.login();
         // }); 
+
+        $("#btn-delete").on("click",()=>{
+            this.deleteById();
+        });
+        $("#btn-update").on("click",()=>{
+            this.update();
+        });
     },
 
     save: function(){
@@ -34,6 +41,44 @@ let index ={
         }).done(function(resp){ //응답의 결과가 함수의 파라미터로 전달.
             console.log(resp);
             alert("글쓰기가 완료되었다.");
+            location.href="/";
+        }).fail(function(error){
+            alert(JSON.stringify(error))
+
+        }); 
+    },
+    deleteById: function(){
+        let id=$("#id").text();
+        $.ajax({
+            //가장 먼저 필요한 것은 type
+            type: "DELETE",
+            url: "/api/board/"+id,
+            dataType: "json" 
+        }).done(function(resp){ 
+            console.log(resp);
+            alert("삭제가 완료되었다.");
+            location.href="/";
+        }).fail(function(error){
+            alert(JSON.stringify(error))
+
+        }); 
+    },
+    update: function(){
+        let id=$("#id").val();
+        let data ={ 
+            title: $("#title").val(),
+            content: $("#content").val()
+        };
+        $.ajax({
+            //가장 먼저 필요한 것은 type
+            type: "PUT",
+            url: "/api/board/"+id,
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        }).done(function(resp){ 
+            console.log(resp);
+            alert("수정이 완료되었다.");
             location.href="/";
         }).fail(function(error){
             alert(JSON.stringify(error))
