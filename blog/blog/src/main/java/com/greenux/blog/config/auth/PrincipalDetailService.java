@@ -15,6 +15,7 @@ public class PrincipalDetailService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     //스프링이 로그인 요청을 가로챌 때, username, password 변수 2개를 가로채는데, password 부분 처리는 알아서 함.
+    //password는 스프링이 따로 가져간다. 인코딩을 해야하기 떄문에.
     // username이 DB에 있는지만 확인해서 리턴해주면 됨.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

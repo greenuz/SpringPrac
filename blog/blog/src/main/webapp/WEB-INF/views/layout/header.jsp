@@ -4,7 +4,7 @@
 <sec:authorize access="isAuthenticated()">
 <script>
   //alert("인증 완료");
-  <sec:authentication property="principal" var="principal"/>
+  <sec:authentication property="principal" var="principal"/> // 현재 세션으로 저장된 로그인한 객체가 principal이라는 속성으로 되어있는데, 이것을 변수로 저장이 되어 있다. var=principal 에서 principal은 PrincipalDetail애서의 클래스 이다.
 </script>
 </sec:authorize>
 
