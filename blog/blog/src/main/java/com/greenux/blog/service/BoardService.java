@@ -3,8 +3,10 @@ package com.greenux.blog.service;
 import java.util.List;
 
 import com.greenux.blog.model.Board;
+import com.greenux.blog.model.Reply;
 import com.greenux.blog.model.User;
 import com.greenux.blog.repository.BoardRepository;
+import com.greenux.blog.repository.ReplyRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,13 +14,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 //Service라는 어노테이션을 붙여야만 스프링이 컴포넌트 스캔을 통해서 Bean에 등록을 해줌. IoC를 해준다. 메모리에 대신 띄어준다.
 @Service 
+@RequiredArgsConstructor
 public class BoardService {
 
-    @Autowired
-    private BoardRepository boardRepository;
+    // @Autowired
+    // private BoardRepository boardRepository;
     
+    // @Autowired
+    // private ReplyRepository replyRepository;
+    // AutoWired를 아래와 같이 풀어서 쓸 수 있다.
+    // // private BoardRepository boardRepository;
+    // // private ReplyRepository replyRepository;
+    // // public BoardService(BoardRepository bRepo, ReplyRepository rRepo){
+    // //     this.boardRepository = bRepo;
+    // //     this.replyRepository = rRepo;
+    // // }
+    // 위의 과정을 가장 심플하게 표현할 때에는 @RequiredArgsConstructor
+    private final BoardRepository boardRepository;
+    private final ReplyRepository replyRepository;
 
     @Transactional //회원가입 전체의 서비스가 하나의 트랜잭션으로 묶이게 된다.전체가 성공하면 커밋, 전체에서 하나라도 실패가 뜨면 롤백.
     public void 글쓰기(Board board, User user){
@@ -55,5 +72,22 @@ public class BoardService {
         board.setTitle(requestBoard.getTitle());
         board.setContent(requestBoard.getContent());
         //해당 함수로 종료시에(service가 종료될 때 ) 트랜잭션이 종료된다. 이때 더티체킹이 일어난다. - 자동 업데이트가 db에 flush 됨.
+    }
+
+    @Transactional
+    public void 댓글쓰기(User user, int boardId,Reply requestReply){
+        Board board = boardRepository.findById(boardId).orElseThrow(()->{
+            return new IllegalArgumentException("댓글 쓰기 실패: 게시글 아이디를 찾을 수 없습니다.");
+        });//영속화하기
+        requestReply.setUser(user);
+        requestReply.setBoard(board);
+        System.out.println(requestReply.getUser() + "     " + requestReply.getContent());
+
+        replyRepository.save(requestReply);
+    }
+
+    @Transactional
+    public void 댓글삭제(int replyId){
+        replyRepository.deleteById(replyId);
     }
 }

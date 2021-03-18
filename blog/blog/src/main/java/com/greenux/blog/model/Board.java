@@ -4,6 +4,7 @@ package com.greenux.blog.model;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -65,14 +68,17 @@ public class Board {
 
     //@JoinColumn(name="replyId") 이 조인 컬럼이 필요가 없다. 
     //즉, 이 replyId ForeignKey가 필요 없다. 왜? 테이블 컬럼에 여러값이 들어가면 안됨. 1정규화(원자성 위배 될가능성 높아짐)
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)//하나의 게시글은 여러개의 댓글을 대응. 이 mappedBy는 연관관계의 주인이 아니다.(난 FK가 아니다.) DB에 컬럼을 만들지 말아라. 
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)//하나의 게시글은 여러개의 댓글을 대응. 이 mappedBy는 연관관계의 주인이 아니다.(난 FK가 아니다.) DB에 컬럼을 만들지 말아라. 
     //mappedby 뒤에 오는 board는 필드이름이다. 무슨필드이름이냐면, Reply 클래스에 있는 private Board board에서 board 이다.
     //OneToMany 일 때에는, Fetchtype.EAGER 를 사용할 수 없음. 왜냐하면, Fetch가 천건 만건이 될 수 있기 떄문에.
     //따라서 기본전략이 LAZY이다.
     //그런데 생각을 해보자, Board 페이지를 열 때에, 댓글을 바로 보여줘야 하는 경우도 있다. 이럴땐 Eager 전략
     //하지만, 펼치기를 누르기 전까지 댓글을 보여줄 필요가 없다고 한다면, Lazy 전략을 택해도 되겠지.
     //즉, UI에 따라 달라지기도 한다.
-    private List<Reply> reply; //하나의 게시판에 한개가 아니고 여러개의 댓글을 불러와야 하기 때문, 
+    //casecade는 보드 삭제시, 어떻게 댓글들을 삭제할 것이냐? -> PERSIST, ALL, 등등의 다양한 것이 있지만, Board가 삭제될 때 그 안에 있는것도 삭제되는 REMOVE 사용. jpa cascade 옵션 검색.
+    @JsonIgnoreProperties({"board"}) //jackson라이브러리가 getter를 호출하여 서로 무한참조하는 데 이러한 상황을 방지. Reply 안에서 board를 다시 json화 하는 것을 안하겠다(getter 안하겠다.).
+    @OrderBy("id desc")// 댓글을 id로 내림차순 정렬.
+    private List<Reply> replies; //하나의 게시판에 한개가 아니고 여러개의 댓글을 불러와야 하기 때문, 
 
     @CreationTimestamp //데이터가 인서트 될 때, 혹은 업데이트 될 때 자동으로 값이 들어가도록
     private Timestamp createDate; //

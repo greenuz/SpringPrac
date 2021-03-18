@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.greenux.blog.config.auth.PrincipalDetail;
 import com.greenux.blog.dto.ResponseDto;
 import com.greenux.blog.model.Board;
+import com.greenux.blog.model.Reply;
 import com.greenux.blog.service.BoardService;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -42,6 +43,22 @@ public class BoardApiController {
     public ResponseDto<Integer> update(@PathVariable int id, @RequestBody Board board) {
         boardService.글수정하기(id,board);
         
+        return new ResponseDto<Integer>(HttpStatus.OK,1);
+    }
+    //원래는 데이터를 받을 때 컨트롤러에서 dto를 만들어서 받는게 좋다.
+    // dto를 사용하지 않은 이유는 자그마한 프로그래램이기 때문이다. [data transfer object]
+    // 내가 필요한 데이터를 한번에 받아서 어딘가에 날릴 수 있다.
+    @PostMapping("/api/board/{boardId}/reply")
+    public ResponseDto<Integer> replySave(@PathVariable int boardId, @RequestBody Reply reply, @AuthenticationPrincipal PrincipalDetail principal){
+
+        
+        boardService.댓글쓰기(principal.getUser(), boardId,reply);
+        return new ResponseDto<Integer>(HttpStatus.OK,1);
+    }
+
+    @DeleteMapping("/api/board/{boardId}/reply/{replyId}")
+    public ResponseDto<Integer> replyDelete(@PathVariable int replyId){
+        boardService.댓글삭제(replyId);
         return new ResponseDto<Integer>(HttpStatus.OK,1);
     }
 }

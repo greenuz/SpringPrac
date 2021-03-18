@@ -39,8 +39,12 @@ let index ={
 
         }).done(function(resp){ //응답의 결과가 함수의 파라미터로 전달.
             console.log(resp);
-            alert("회원가입이 완료되었다.");
-            location.href="/";
+            if(resp.status == "INTERNAL_SERVER_ERROR"){
+                alert("회원가입에 실패했습니다.");
+            }else{
+                alert("회원가입이 완료되었다.");
+                location.href="/";
+            }
         }).fail(function(error){
             alert(JSON.stringify(error))
 

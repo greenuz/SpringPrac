@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 // .failureUrl("/auth/loginForm");
     }
 
-    @Bean
+    @Bean //오브젝트 객체
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception{
         return super.authenticationManagerBean();
