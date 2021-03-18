@@ -33,7 +33,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //넘버링 전략 : 프로젝트에서 연결된 DB의 넘버링 전략을 따라가겠다. 해당 IDENTITY는 오라클 DB를 사용했을 때에는 시퀀스일것이고, MYSQL 을 사용했을 때에는 auto_increment 일 것이다.
     private int id; //오라클에선 시퀀스, mysql에선 auto_increment로 가져갈 전략
 
-    @Column(nullable = false, length = 20, unique = true) // username 은 null 이 될 수 없다. length 는 20자로 세팅.
+    @Column(nullable = false, length = 100, unique = true) // username 은 null 이 될 수 없다. length 는 20자로 세팅.
     private String username; //id 값.
 
     @Column(nullable = false, length = 100) //12345-> 해쉬 떠서 비밀번호 암호화 함.
@@ -50,4 +50,7 @@ public class User {
 
     @CreationTimestamp //시간이 자동으로 입력이 된다.
     private Timestamp createDate; //Java SQL 이 들고 있는 것. 
+
+    //캬카오를 통한 로그인을 한 사람인지, 아니면 그냥 로그인 한 사람인지 해당 값을 추가한다.
+    private String oauth; //kakao, google
 }

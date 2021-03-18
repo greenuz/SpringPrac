@@ -16,10 +16,12 @@
             <input type="text" value="${principal.user.username}" class="form-control" placeholder="Enter username" id="username" readonly>
         </div>
 
+        <c:if test="${empty principal.user.oauth}">
         <div class="form-group">
             <label for="pwd">Password:</label>
             <input type="password" class="form-control" placeholder="Enter password" id="password">
         </div>
+        </c:if>
     </form>
      <button id="btn-update" class="btn btn-primary">회원 수정 완료</button>
 </div>

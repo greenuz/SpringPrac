@@ -31,7 +31,9 @@ public class UserService {
         String encPassword = encoder.encode(rawPassword);//해쉬
         user.setPassword(encPassword);
         user.setRole(Roletype.USER);
+        System.out.println(user.getUsername());
         userRepository.save(user);
+        
         //아래의 주석은 어짜피 GlobalExceptionHandler에 의해 처리됨.
         // try {
         //     userRepository.save(user);
@@ -56,12 +58,25 @@ public class UserService {
             .orElseThrow(()->{
                 return new IllegalArgumentException("회원 찾기 실패");
             });
-        String rawPassword = user.getPassword();
-        String encPassword= encoder.encode(rawPassword);
-        persistence.setPassword(encPassword);
+
+        //kakao Oauth Validation Check
+        if(persistence.getOauth() == null || persistence.getOauth().equals("")){
+            String rawPassword = user.getPassword();
+            String encPassword= encoder.encode(rawPassword);
+            persistence.setPassword(encPassword);
+        }
+
         persistence.setEmail(user.getEmail());
         //끝날 때 서비스가 종료되는 것과 마찬가지고, Transaction이 종료된다는 것이고 Commit이 자동으로 된다는 것.
         //영속화된 persistence 객체의 변화가 감지되면 더티체킹이 되어 변화된 것을 update문을 자동으로 날려줌.
+    }
+
+    @Transactional(readOnly = true)
+    public User 회원찾기(String username){
+        User user = userRepository.findByUsername(username).orElseGet(()->{
+            return new User(); //만약에 username을 찾았는데 없으면 User()빈 객체를 리턴해라.
+        });
+        return user;
     }
 }
 /*
